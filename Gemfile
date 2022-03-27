@@ -42,3 +42,12 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'dry-validation', '~> 1.6.0'
 gem 'active_model_serializers', '~> 0.10.0'
+gem 'json', '~> 2.6', '>= 2.6.1'
+
+group :test do
+  gem 'rspec-rails', '~> 5.0.0'
+  gem 'shoulda-matchers', '~> 5.0'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'rails-controller-testing'
+end

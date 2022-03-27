@@ -7,8 +7,9 @@ class UsersController < ApplicationController
   # GET /users
   def index
     @users = UserQuery.new(User.all).call(filter_params)
-
-    render json: @users, each_serializer: UserCollectionSerializer
+    if stale?(etag: @users, last_modified: @users.maximum(:updated_at))
+      render json: @users, each_serializer: UserCollectionSerializer
+    end
   end
 
   # GET /users/1
@@ -19,7 +20,7 @@ class UsersController < ApplicationController
 
   # POST /users
   def create
-    if @result.errors
+    if @result.errors.present?
       render json: @result.errors, status: :unprocessable_entity
     else
       @user = User.create!(user_params)
@@ -29,11 +30,11 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
-    if @result.errors
+    if @result.errors.present?
       render json: @result.errors, status: :unprocessable_entity
     else
-      @user = User.update!(user_params)
-      render json: @user, serializer: UserSerializer, status: :created
+      @user.update!(user_params)
+      render json: @user, serializer: UserSerializer
     end
   end
 
@@ -45,7 +46,7 @@ class UsersController < ApplicationController
   private
 
   def validate
-    @result = UserContract.new.call(user_params)
+    @result = UserContract.new.call(user_params.to_h)
   end
   # Use callbacks to share common setup or constraints between actions.
   def set_user

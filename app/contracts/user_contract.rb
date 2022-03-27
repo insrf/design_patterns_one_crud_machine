@@ -5,7 +5,7 @@ class UserContract < ApplicationContract
     required(:name).value(:string)
     required(:email).value(:string)
   end
-
+  
   rule(:email) do
     unless /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i.match?(value)
       key.failure('has invalid format')
